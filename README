@@ -1,0 +1,9 @@
+app.py file contains a collection of most frequently used Docker APIs. I have used
+docker-py package and Python Bottle framework for doing so. These packages can be
+installed by issuing the following commands from the terminal
+
+sudo pip install docker-py
+sudo apt-get install python-bottle
+
+These APIs are the most commonly used ones. Depending upon the business requirements
+similar APIs can be created. Stay tuned for new APIs. 
