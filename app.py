@@ -124,4 +124,44 @@ def get_running_containers():
 		fail_response["message"] = "unknown"
 		return str(fail_response)
 
+@route('/kill/<container>')
+def kill( container):
+	try:
+		c = DockerClient.client
+		c.kill(container)
+		response={}
+		response["status"] = "success"
+		response["message"] = container + " killed successfully"
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(fail_response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
+
+@route('/remove-container/<container>')
+def remove_container(container):
+	try:
+		c = DockerClient.client
+		c.remove_container(container)
+		response={}
+		response["status"] = "success"
+		response["message"] = container + " killed successfully"
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
+
 run(host='localhost', port=8080, debug=True)
