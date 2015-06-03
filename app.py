@@ -88,4 +88,40 @@ def pull(repository, tag):
 		fail_response["message"] = "unknown"
 		return str(fail_response)
 
+@route('/get-all-containers')
+def get_all_containers():
+	c = DockerClient.client;
+	try:
+		response = {}
+		response['containers'] = c.containers(all=True)
+		return str(response)
+	except errors.APIError as e:
+		fail_response = {}
+		fail_response["status"] = "fail"
+		fail_response["message"] = e.explanation
+		return str(fail_response)
+	except:
+		fail_response = {}
+		fail_response["status"] = "fail"
+		fail_response["message"] = "unknown"
+		return str(fail_response)
+
+@route('/get-running-containers')
+def get_running_containers():
+	c = DockerClient.client;
+	try:
+		response = {}
+		response['containers'] = c.containers()
+		return str(response)
+	except errors.APIError as e:
+		fail_response = {}
+		fail_response["status"] = "fail"
+		fail_response["message"] = e.explanation
+		return str(fail_response)
+	except:
+		fail_response = {}
+		fail_response["status"] = "fail"
+		fail_response["message"] = "unknown"
+		return str(fail_response)
+
 run(host='localhost', port=8080, debug=True)
