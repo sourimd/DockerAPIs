@@ -164,4 +164,37 @@ def remove_container(container):
 		response["message"] = "unknown"
 		return str(response)
 
+@route('/start-container/<container>')
+def start_container(container):
+	c = DockerClient.client
+	try:
+		response = c.start(container)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
+
+@route('/stop-container/<container>')
+def stop_container(container):
+	c = DockerClient.client
+	try:
+		response = c.stop(container)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
 run(host='localhost', port=8080, debug=True)
