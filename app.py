@@ -2,6 +2,7 @@
 
 from bottle import route, run, error
 from docker import Client, errors
+import sys
 
 class DockerClient:
 	client = Client(base_url = 'unix://var/run/docker.sock', version = 'auto')
@@ -41,7 +42,7 @@ def remove_image(image_name, tag):
 		return str(response)
 	except:
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 @route('/inspect-image/<image_id>')
@@ -58,7 +59,7 @@ def inspect_image(image_id):
 	except:
 		fail_response = {}
 		fail_response["status"] = "fail"
-		fail_response["message"] = "unknown"
+		fail_response["message"] = str( sys.exc_info())
 		return str(fail_response)
 
 @route('/search/<query>')
@@ -85,7 +86,7 @@ def pull(repository, tag):
 	except:
 		fail_response = {}
 		fail_response["status"] = "fail"
-		fail_response["message"] = "unknown"
+		fail_response["message"] = str( sys.exc_info())
 		return str(fail_response)
 
 @route('/get-all-containers')
@@ -103,7 +104,7 @@ def get_all_containers():
 	except:
 		fail_response = {}
 		fail_response["status"] = "fail"
-		fail_response["message"] = "unknown"
+		fail_response["message"] = str( sys.exc_info())
 		return str(fail_response)
 
 @route('/get-running-containers')
@@ -121,7 +122,7 @@ def get_running_containers():
 	except:
 		fail_response = {}
 		fail_response["status"] = "fail"
-		fail_response["message"] = "unknown"
+		fail_response["message"] = str( sys.exc_info())
 		return str(fail_response)
 
 @route('/kill/<container>')
@@ -141,7 +142,7 @@ def kill( container):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 @route('/remove-container/<container>')
@@ -161,7 +162,7 @@ def remove_container(container):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 @route('/start-container/<container>')
@@ -178,7 +179,7 @@ def start_container(container):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 @route('/restart-container/<container>')
@@ -195,7 +196,7 @@ def restart_container(container):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 @route('/stop-container/<container>')
@@ -212,7 +213,7 @@ def stop_container(container):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 @route('/pause-container/<container>')
@@ -229,7 +230,7 @@ def stop_container(container):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
 #show container logs with or without timestamp
@@ -247,7 +248,26 @@ def show_logs(container, ts):
 	except:
 		response = {}
 		response["status"] = "fail"
-		response["message"] = "unknown"
+		response["message"] = str( sys.exc_info())
 		return str(response)
 
+@route('/container-rename/<container>/<new_name>')
+def show_logs(container, new_name):
+	c = DockerClient.client
+	try:
+		c.rename(container, new_name)
+		response = {}
+		response['status'] = success
+		response['message'] = str(container)+" renamed to "+ str(new_name)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = str( sys.exc_info())
+		return str(response)
 run(host='localhost', port=8080, debug=True)
