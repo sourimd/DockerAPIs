@@ -125,8 +125,8 @@ def get_running_containers():
 		fail_response["message"] = str( sys.exc_info())
 		return str(fail_response)
 
-@route('/kill/<container>')
-def kill( container):
+@route('/kill-container/<container>')
+def kill_container( container):
 	try:
 		c = DockerClient.client
 		c.kill(container)
@@ -251,8 +251,8 @@ def show_logs(container, ts):
 		response["message"] = str( sys.exc_info())
 		return str(response)
 
-@route('/container-rename/<container>/<new_name>')
-def show_logs(container, new_name):
+@route('/rename-container/<container>/<new_name>')
+def rename_container(container, new_name):
 	c = DockerClient.client
 	try:
 		c.rename(container, new_name)
@@ -270,4 +270,5 @@ def show_logs(container, new_name):
 		response["status"] = "fail"
 		response["message"] = str( sys.exc_info())
 		return str(response)
+
 run(host='localhost', port=8080, debug=True)
