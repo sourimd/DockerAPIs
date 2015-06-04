@@ -181,6 +181,23 @@ def start_container(container):
 		response["message"] = "unknown"
 		return str(response)
 
+@route('/restart-container/<container>')
+def restart_container(container):
+	c = DockerClient.client
+	try:
+		response = c.restart(container)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
+
 @route('/stop-container/<container>')
 def stop_container(container):
 	c = DockerClient.client
@@ -197,4 +214,40 @@ def stop_container(container):
 		response["status"] = "fail"
 		response["message"] = "unknown"
 		return str(response)
+
+@route('/pause-container/<container>')
+def stop_container(container):
+	c = DockerClient.client
+	try:
+		response = c.pause(container)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
+
+#show container logs with or without timestamp
+@route('/show-logs/<container>/<ts>')
+def show_logs(container, ts):
+	c = DockerClient.client
+	try:
+		response = c.logs(container=container, timestamps=ts)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = "unknown"
+		return str(response)
+
 run(host='localhost', port=8080, debug=True)
