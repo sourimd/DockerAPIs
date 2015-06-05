@@ -165,6 +165,25 @@ def remove_container(container):
 		response["message"] = str( sys.exc_info())
 		return str(response)
 
+@route('/create-container/<image>/<tag>/<container_name>')
+def create_container(image, tag, container_name):
+	c = DockerClient.client
+	full_image = str(image)+":"+str(tag)
+	try:
+		container = c.create_container(image=full_image, command='/bin/bash', name=container_name,\
+										tty=True, stdin_open=True)
+		return str(container)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = str( sys.exc_info())
+		return str(response)
+
 @route('/start-container/<container>')
 def start_container(container):
 	c = DockerClient.client
