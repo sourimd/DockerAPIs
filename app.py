@@ -62,6 +62,25 @@ def inspect_image(image_id):
 		fail_response["message"] = str( sys.exc_info())
 		return str(fail_response)
 
+@route('/get-image-history/<image>/<tag>')
+def get_image_history(image, tag):
+	c = DockerClient.client
+	try:
+		full_image = str(image)+":"+str(tag)
+		response = c.history(str(full_image) )
+		return str(response)
+	except errors.APIError as e:
+		fail_response = {}
+		fail_response["status"] = "fail"
+		fail_response["message"] = e.explanation
+		return str(fail_response)
+	except:
+		fail_response = {}
+		fail_response["status"] = "fail"
+		fail_response["message"] = str( sys.exc_info())
+		return str(fail_response)
+
+
 @route('/search/<query>')
 def search(query):
 	c = DockerClient.client
@@ -240,6 +259,23 @@ def stop_container(container):
 	c = DockerClient.client
 	try:
 		response = c.pause(container)
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = str( sys.exc_info())
+		return str(response)
+
+@route('/get-processes-within-container/<container>')
+def top_container(container):
+	c = DockerClient.client
+	try:
+		response = c.top(str(container))
 		return str(response)
 	except errors.APIError as e:
 		response = {}
