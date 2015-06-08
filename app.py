@@ -326,4 +326,38 @@ def rename_container(container, new_name):
 		response["message"] = str( sys.exc_info())
 		return str(response)
 
+@route('/docker-info')
+def docker_info():
+	c = DockerClient.client
+	try:
+		response = c.info()
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = str( sys.exc_info())
+		return str(response)
+
+@route('/docker-version')
+def docker_version():
+	c = DockerClient.client
+	try:
+		response = c.version()
+		return str(response)
+	except errors.APIError as e:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = e.explanation
+		return str(response)
+	except:
+		response = {}
+		response["status"] = "fail"
+		response["message"] = str( sys.exc_info())
+		return str(response)
+
 run(host='localhost', port=8080, debug=True)
